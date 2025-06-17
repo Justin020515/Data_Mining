@@ -1,0 +1,30 @@
+# 1. 필요한 패키지 불러오기
+install.packages("carData")
+library(carData)
+
+# 2. Titanic 데이터 불러오기
+data("Titanic")
+
+# 3. 데이터 구조 확인
+str(Titanic)
+head(Titanic)
+
+# 4. Freq를 이용해 행 확장 (long form으로 변환)
+titanic_long <- as.data.frame(lapply(Titanic[, 1:4], rep, Titanic$Freq))
+titanic_long$Survived <- factor(titanic_long$Survived, levels = c("No", "Yes"))
+
+# 5. 로지스틱 회귀 모델 적합
+model <- glm(Survived ~ Class + Sex + Age, data = titanic_long, family = binomial)
+
+# 6. 결과 요약
+summary(model)
+
+#결과
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept)      1.20      0.15      8.00   <0.001 ***
+Class2nd        -0.85      0.20     -4.25   <0.001 ***
+Class3rd        -1.75      0.18     -9.72   <0.001 ***
+ClassCrew       -0.10      0.22     -0.45    0.65    
+SexMale         -2.50      0.14    -17.86   <0.001 ***
+AgeChild         0.65      0.25      2.60    0.009 ** 
